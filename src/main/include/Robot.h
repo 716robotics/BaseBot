@@ -51,6 +51,7 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
   void StraightDrive();
+  void HoldTheLine();
   void Abort();
 
  private:

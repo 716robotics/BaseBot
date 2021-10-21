@@ -47,9 +47,11 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-  if (leftDriveStick.GetTrigger()) StraightDrive();
-  else {drive.TankDrive((leftDriveStick.GetY() * -1), (rightDriveStick.GetY() * -1));
-  sdfr = false;}
+  if (rightDriveStick.GetTrigger()) HoldTheLine();
+  else if (leftDriveStick.GetTrigger()) StraightDrive();
+  else {
+    drive.TankDrive((leftDriveStick.GetY() * -1), (rightDriveStick.GetY() * -1));
+    sdfr = false;}
   if (gamepad.GetBackButtonPressed()) Abort();
 }
 
@@ -62,19 +64,26 @@ void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
 
 void Robot::StraightDrive(){
-//drive.TankDrive
-if (!sdfr){
-  leftDriveEncoder.Reset();
-  rightDriveEncoder.Reset();
-  sdfr = true;
-}
-double throttle = (-1 *leftDriveStick.GetY());
-double left = (leftDriveEncoder.GetDistance());
-double right = (-1 * rightDriveEncoder.GetDistance());
-double difference = right - left;
-double lpower = (throttle - (difference * 0.1));
-double rpower = (throttle + (difference * 0.1));
-drive.TankDrive(lpower, rpower, false);
+  if (!sdfr){
+    leftDriveEncoder.Reset();
+    rightDriveEncoder.Reset();
+    sdfr = true;
+  }
+  double throttle = (-1 *leftDriveStick.GetY());
+  double difference = (-1 * rightDriveEncoder.GetDistance()) - (leftDriveEncoder.GetDistance());
+  drive.TankDrive((throttle - (difference * 0.1)), (throttle + (difference * 0.1)), false);
+  }
+
+//Should keep the robot from moving, never tested it
+void Robot::HoldTheLine(){
+  std::cout << "Love isn't always on time" << std::endl; // No I am not ashamed of this TOTO reference
+    if (!sdfr){
+    leftDriveEncoder.Reset();
+    rightDriveEncoder.Reset();
+    sdfr = true;
+  }
+  double ldrift = leftDriveEncoder.GetDistance();
+  drive.TankDrive((0.5 * leftDriveEncoder.GetDistance()),(-0.5 * rightDriveEncoder.GetDistance()), false);
 }
 
 void Robot::Abort(){
