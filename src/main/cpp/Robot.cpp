@@ -11,8 +11,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+  m_chooser.SetDefaultOption(kAutoDriveForward, kAutoDriveForward);
+  m_chooser.AddOption(kAutoDoNothing, kAutoDoNothing);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   compressor.Start();
 }
@@ -25,20 +25,15 @@ void Robot::AutonomousInit() {
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_autoSelected << std::endl;
-
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
+  leftDriveEncoder.Reset();
+  rightDriveEncoder.Reset();
 }
 
 void Robot::AutonomousPeriodic() {
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
+  if (m_autoSelected == kAutoDriveForward && autoactive) {
+    if (DistanceDrive(1,AUTODIST, true) == DONE) autoactive = false;
   }
+  else drive.TankDrive(0,0,false); 
 }
 
 void Robot::TeleopInit() {
@@ -88,6 +83,103 @@ void Robot::HoldTheLine(){
 
 void Robot::Abort(){
   return;
+}
+
+int Robot::DistanceDrive (float speed, float distance, bool brake)
+{
+	static bool FirstCallFlag = true; // FirstCallFlag should always be set to true when returning DONE
+	static float autoStartSpeed;
+  static float direction;
+	static double lastDistance, speedUpDistance, slowDownDistance;
+  static int sameCounter;
+  static bool brakingFlag;
+  static double brakeStartTime; 
+
+	float curve;
+	float correction;
+	float newSpeed;
+	double curDistance;
+
+  if (FirstCallFlag) {
+    // Setup distance drive on first call
+    // Set initial values for static variables
+    brakingFlag = false;
+    FirstCallFlag = false;
+    if (speed < 0) {
+      direction = -1;
+    } else {
+      direction = 1;
+    }
+    autoStartSpeed = direction * AUTOSTARTSPEED;
+    if (distance < (DRIVERAMPUPDISTANCE * 2)) {
+	    speedUpDistance = distance / 2;
+	    slowDownDistance = speedUpDistance;
+    } else {
+	    speedUpDistance = DRIVERAMPUPDISTANCE;
+     	slowDownDistance = distance - DRIVERAMPUPDISTANCE;
+    }
+	  frc::SmartDashboard::PutNumber(  "DistanceDrive Distance", distance);
+  	lastDistance = 0;
+    sameCounter = 0;
+    leftDriveEncoder.Reset();
+  }
+
+ 	if (brakingFlag) {
+     // Braking flag gets set once we reach targe distance if the brake parameter
+     // was specified. Drive in reverse direction at low speed for short duration.
+    if ((AutoTimer.Get() - brakeStartTime) < .2) {
+    	drive.TankDrive(-0.2 * direction *FORWARD, -0.2 * direction * FORWARD);
+      return NOTDONEYET;
+    } else {
+      drive.TankDrive(0, 0);
+      brakingFlag = false;
+      FirstCallFlag = true;
+      return DONE;
+    }
+	}
+
+  curve = 0;
+  
+	curDistance = abs(leftDriveEncoder.GetDistance());
+
+	if (curDistance == lastDistance) {
+		if (sameCounter++ == 50) {
+				return ERROR;
+		}
+	} else {
+		sameCounter = 0;
+		lastDistance = curDistance;
+	}
+
+	if (curDistance < speedUpDistance) {
+		newSpeed = autoStartSpeed + ((speed - autoStartSpeed) * curDistance)/DRIVERAMPUPDISTANCE;
+	} else if ((curDistance > slowDownDistance) && (brake == true)) {
+		newSpeed = speed * (distance-curDistance)/DRIVERAMPUPDISTANCE;
+	} else {
+		newSpeed = speed;
+	}
+
+	drive.CurvatureDrive(newSpeed * (AUTOFORWARD), (direction * (curve+correction)), false);
+//	drive.CurvatureDrive(newSpeed * (AUTOFORWARD), 0, false);
+	curDistance = abs(leftDriveEncoder.GetDistance());
+  if (curDistance < distance) {
+    return NOTDONEYET;
+  } else {
+    if (brake) {
+      brakingFlag = true;
+      brakeStartTime = AutoTimer.Get();
+      return NOTDONEYET;
+    } else {
+      FirstCallFlag = true;
+      drive.TankDrive(0, 0);
+      return DONE;
+    }
+  }
+  
+  // should never get here
+  drive.TankDrive(0, 0);
+  FirstCallFlag = true;
+  return DONE;
 }
 
 #ifndef RUNNING_FRC_TESTS

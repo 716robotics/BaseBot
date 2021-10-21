@@ -1,9 +1,12 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-#define ROBOTDISTANCEPERPULSE 0.05333333
-#pragma once
 
+//Approximate distance for auto to drive forward in inches
+#define AUTODIST 500
+
+#pragma once
+#include <tunables.h>
 #include <string>
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
@@ -38,7 +41,9 @@ class Robot : public frc::TimedRobot {
 	frc::Encoder leftDriveEncoder{0,1,false,frc::Encoder::k4X};
 	frc::Encoder rightDriveEncoder{2,3,false,frc::Encoder::k4X};
   //Global Vars
+  frc::Timer AutoTimer;
   bool sdfr = false;
+  bool autoactive = true;
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -53,10 +58,11 @@ class Robot : public frc::TimedRobot {
   void StraightDrive();
   void HoldTheLine();
   void Abort();
+  int DistanceDrive(float,float,bool);
 
  private:
   frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
+  const std::string kAutoDriveForward = "Drive Forward";
+  const std::string kAutoDoNothing = "Do Nothing";
   std::string m_autoSelected;
 };
