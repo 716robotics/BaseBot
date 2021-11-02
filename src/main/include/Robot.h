@@ -38,6 +38,13 @@ class Robot : public frc::TimedRobot {
   frc::DifferentialDrive drive{lDrive, rDrive};
   //Effectors
   frc::Compressor compressor;
+  frc::Talon auxSpeedController1{4};
+  frc::Talon auxSpeedController2{5};
+  frc::Talon auxSpeedController3{6};
+  frc::Relay relay1{7};
+  frc::Relay relay2{8};
+  frc::Relay relay3{9};
+  //Sensors
 	frc::Encoder leftDriveEncoder{0,1,false,frc::Encoder::k4X};
 	frc::Encoder rightDriveEncoder{2,3,false,frc::Encoder::k4X};
   //Global Vars

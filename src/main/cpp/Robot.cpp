@@ -47,7 +47,19 @@ void Robot::TeleopPeriodic() {
   else {
     drive.TankDrive((leftDriveStick.GetY() * -1), (rightDriveStick.GetY() * -1));
     sdfr = false;}
+  
   if (gamepad.GetBackButtonPressed()) Abort();
+  //Analog Controls
+  if (gamepad.GetTriggerAxis(gamepad.kRightHand) > 0.1 || gamepad.GetTriggerAxis(gamepad.kLeftHand) > 0.1){ // check deadzone
+    auxSpeedController1.Set(gamepad.GetTriggerAxis(gamepad.kRightHand)-gamepad.GetTriggerAxis(gamepad.kLeftHand));} //left is reverse
+
+  if (fabs(gamepad.GetY(gamepad.kLeftHand)) > 0.1 ){ // check deadzone
+    auxSpeedController2.Set(gamepad.GetY(gamepad.kLeftHand));} 
+    
+  if (fabs(gamepad.GetY(gamepad.kRightHand)) > 0.1 ){ // check deadzone
+    auxSpeedController3.Set(gamepad.GetY(gamepad.kRightHand));} 
+  
+
 }
 
 void Robot::DisabledInit() {}
