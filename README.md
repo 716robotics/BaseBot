@@ -27,7 +27,7 @@ The sticks and triggers correspond to the optional end effector speed controller
 **Buttons & Bumpers** are hold - based. Pressing them will activate their corresponding device and releasing them will return it to its neutral state.
 
 **Control Locking:** By holding the d-pad, tapping a button, then releasing both, the operator can lock a device in its activated state. The device can be returned to its deactivated state by pressing and releasing its corresponding button again or with the abort button. 
-
+![Control Mappings](https://raw.githubusercontent.com/716robotics/BaseBot/main/Operator_Control_Mapping.png)
 ## RoboRio Mappings (bold is required)
 ### PWM
 Port | Description
@@ -55,6 +55,7 @@ Port | Description
 7 | Unassigned
 8 | Unassigned
 9 | Unassigned
+
 Note: encoders are required for autonomous, straight drive, and Hold the Line to work properly but the robot can be run without them.
 ### PCM
 Port | Description
@@ -68,4 +69,5 @@ Compressor | **Compressor**
 5 | Pneumatic 3 B
 6 | Pneumatic 4 A
 7 | Pneumatic 4 B
+
 note: Compressor is **only** required if any other pneumatics are in use
