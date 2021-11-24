@@ -47,18 +47,21 @@ void Robot::TeleopPeriodic() {
   else {
     drive.TankDrive((leftDriveStick.GetY() * -1), (rightDriveStick.GetY() * -1));
     sdfr = false;}
-  
   if (gamepad.GetBackButtonPressed()) Abort();
   //Analog Controls
   if (gamepad.GetTriggerAxis(gamepad.kRightHand) > 0.1 || gamepad.GetTriggerAxis(gamepad.kLeftHand) > 0.1){ // check deadzone
     auxSpeedController1.Set(gamepad.GetTriggerAxis(gamepad.kRightHand)-gamepad.GetTriggerAxis(gamepad.kLeftHand));} //left is reverse
-
   if (fabs(gamepad.GetY(gamepad.kLeftHand)) > 0.1 ){ // check deadzone
     auxSpeedController2.Set(gamepad.GetY(gamepad.kLeftHand));} 
-    
   if (fabs(gamepad.GetY(gamepad.kRightHand)) > 0.1 ){ // check deadzone
     auxSpeedController3.Set(gamepad.GetY(gamepad.kRightHand));} 
-  
+  //Relay
+  if (gamepad.GetBumper(gamepad.kLeftHand)) relay1.Set(relay1.kOn);
+  else relay1.Set(relay1.kOff);
+  if (gamepad.GetBumper(gamepad.kRightHand)) relay2.Set(relay2.kOn);
+  else relay2.Set(relay2.kOff);
+  if (gamepad.GetPOV() != -1) relay3.Set(relay3.kOn);
+  else relay3.Set(relay3.kOff);
 
 }
 
@@ -94,7 +97,12 @@ void Robot::HoldTheLine(){
 }
 
 void Robot::Abort(){
-  return;
+  auxSpeedController1.StopMotor();
+  auxSpeedController2.StopMotor();
+  auxSpeedController3.StopMotor();
+  relay1.StopMotor();
+  relay2.StopMotor();
+  relay3.StopMotor();
 }
 
 int Robot::DistanceDrive (float speed, float distance, bool brake)
