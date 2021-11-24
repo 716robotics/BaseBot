@@ -55,14 +55,39 @@ void Robot::TeleopPeriodic() {
     auxSpeedController2.Set(gamepad.GetY(gamepad.kLeftHand));} 
   if (fabs(gamepad.GetY(gamepad.kRightHand)) > 0.1 ){ // check deadzone
     auxSpeedController3.Set(gamepad.GetY(gamepad.kRightHand));} 
-  //Relay
-  if (gamepad.GetBumper(gamepad.kLeftHand)) relay1.Set(relay1.kOn);
-  else relay1.Set(relay1.kOff);
-  if (gamepad.GetBumper(gamepad.kRightHand)) relay2.Set(relay2.kOn);
-  else relay2.Set(relay2.kOff);
-  if (gamepad.GetPOV() != -1) relay3.Set(relay3.kOn);
-  else relay3.Set(relay3.kOff);
-
+  if (gamepad.GetPOV() != -1) Lock();
+  else {
+    //Relays
+    if (gamepad.GetBumper(gamepad.kLeftHand)) {
+      relay1.Set(relay1.kOn);
+      Rly1DefState = frc::Relay::kOff;}
+    else relay1.Set(Rly1DefState);
+    if (gamepad.GetBumper(gamepad.kRightHand)) {
+      relay2.Set(relay2.kOn);
+      Rly2DefState = frc::Relay::kOff;}
+    else relay2.Set(Rly2DefState);
+    if (rightDriveStick.GetTop()) {
+      relay3.Set(relay3.kOn);
+      Rly3DefState = frc::Relay::kOff;}
+    else relay3.Set(Rly3DefState);
+    //Pneumatics
+    if (gamepad.GetXButton()) {
+      Pneumatic1.Set(Pneumatic1.kForward);
+      Pnm1DefState = frc::DoubleSolenoid::Value::kReverse;}
+    else Pneumatic1.Set(Pnm1DefState);
+    if (gamepad.GetYButton()) {
+      Pneumatic2.Set(Pneumatic2.kForward);
+      Pnm2DefState = frc::DoubleSolenoid::Value::kReverse;}
+    else Pneumatic2.Set(Pnm2DefState);
+    if (gamepad.GetBButton()) {
+      Pneumatic3.Set(Pneumatic3.kForward);
+      Pnm3DefState = frc::DoubleSolenoid::Value::kReverse;}
+    else Pneumatic3.Set(Pnm3DefState);
+    if (gamepad.GetAButton()) {
+      Pneumatic4.Set(Pneumatic4.kForward);
+      Pnm4DefState = frc::DoubleSolenoid::Value::kReverse;}
+    else Pneumatic4.Set(Pnm4DefState);
+  }
 }
 
 void Robot::DisabledInit() {}
@@ -92,8 +117,7 @@ void Robot::HoldTheLine(){
     rightDriveEncoder.Reset();
     sdfr = true;
   }
-  double ldrift = leftDriveEncoder.GetDistance();
-  drive.TankDrive((0.5 * leftDriveEncoder.GetDistance()),(-0.5 * rightDriveEncoder.GetDistance()), false);
+  drive.TankDrive((0.25 * leftDriveEncoder.GetDistance()),(-0.25 * rightDriveEncoder.GetDistance()), false);
 }
 
 void Robot::Abort(){
@@ -103,6 +127,27 @@ void Robot::Abort(){
   relay1.StopMotor();
   relay2.StopMotor();
   relay3.StopMotor();
+  Pneumatic1.Set(frc::DoubleSolenoid::Value::kReverse);
+  Pneumatic2.Set(frc::DoubleSolenoid::Value::kReverse);
+  Pneumatic3.Set(frc::DoubleSolenoid::Value::kReverse);
+  Pneumatic4.Set(frc::DoubleSolenoid::Value::kReverse);
+  Rly1DefState = frc::Relay::kOff;
+  Rly2DefState = frc::Relay::kOff;
+  Rly3DefState = frc::Relay::kOff;
+  Pnm1DefState = frc::DoubleSolenoid::Value::kReverse;
+  Pnm2DefState = frc::DoubleSolenoid::Value::kReverse;
+  Pnm3DefState = frc::DoubleSolenoid::Value::kReverse;
+  Pnm4DefState = frc::DoubleSolenoid::Value::kReverse;
+}
+
+void Robot::Lock(){
+  if (gamepad.GetBumper(gamepad.kLeftHand)) Rly1DefState = frc::Relay::kOn;
+  if (gamepad.GetBumper(gamepad.kRightHand)) Rly2DefState = frc::Relay::kOn;
+  if (rightDriveStick.GetTop()) Rly3DefState = frc::Relay::kOn;
+  if (gamepad.GetXButton()) Pnm1DefState = frc::DoubleSolenoid::Value::kForward;
+  if (gamepad.GetYButton()) Pnm2DefState = frc::DoubleSolenoid::Value::kForward;
+  if (gamepad.GetBButton()) Pnm3DefState = frc::DoubleSolenoid::Value::kForward;
+  if (gamepad.GetAButton()) Pnm4DefState = frc::DoubleSolenoid::Value::kForward;
 }
 
 int Robot::DistanceDrive (float speed, float distance, bool brake)
@@ -115,8 +160,6 @@ int Robot::DistanceDrive (float speed, float distance, bool brake)
   static bool brakingFlag;
   static double brakeStartTime; 
 
-	float curve;
-	float correction;
 	float newSpeed;
 	double curDistance;
 
@@ -157,8 +200,6 @@ int Robot::DistanceDrive (float speed, float distance, bool brake)
       return DONE;
     }
 	}
-
-  curve = 0;
   
 	curDistance = abs(leftDriveEncoder.GetDistance());
 
@@ -179,8 +220,7 @@ int Robot::DistanceDrive (float speed, float distance, bool brake)
 		newSpeed = speed;
 	}
 
-	drive.CurvatureDrive(newSpeed * (AUTOFORWARD), (direction * (curve+correction)), false);
-//	drive.CurvatureDrive(newSpeed * (AUTOFORWARD), 0, false);
+	drive.CurvatureDrive(newSpeed * (AUTOFORWARD), 0, false);
 	curDistance = abs(leftDriveEncoder.GetDistance());
   if (curDistance < distance) {
     return NOTDONEYET;
