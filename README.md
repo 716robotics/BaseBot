@@ -39,9 +39,17 @@ Port | Description
 4 | Aux. Speed Controller 1
 5 | Aux. Speed Controller 2
 6 | Aux. Speed Controller 3
-7 | Aux. Relay 1
-8 | Aux. Relay 2
-9 | Aux. Relay 3
+7 | Empty
+8 | Empty
+9 | Empty
+
+### Relay
+Port | Description
+--- | ---
+0 | Aux. Relay 1
+1 | Aux. Relay 2
+2 | Aux. Relay 3
+
 ### DIO
 Port | Description
 --- | ---

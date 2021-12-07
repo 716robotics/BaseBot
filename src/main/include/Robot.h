@@ -41,9 +41,9 @@ class Robot : public frc::TimedRobot {
   frc::Talon auxSpeedController1{4};
   frc::Talon auxSpeedController2{5};
   frc::Talon auxSpeedController3{6};
-  frc::Relay relay1{7};
-  frc::Relay relay2{8};
-  frc::Relay relay3{9};
+  frc::Relay relay1{0};
+  frc::Relay relay2{1};
+  frc::Relay relay3{2};
   frc::DoubleSolenoid Pneumatic1{0,1};
   frc::DoubleSolenoid Pneumatic2{2,3};
   frc::DoubleSolenoid Pneumatic3{4,5};
