@@ -1,5 +1,5 @@
 # Team 716 Basic Bot generic code
-### Code that can drive, move forward in autonomous, and has mappings for speed controllers, relays, and Pneumatics
+### Code that can drive, move forward in autonomous, and has mappings for speed controllers and Pneumatics
 
 
 ## Basic Information
@@ -18,7 +18,7 @@ When the left stick trigger is held, the robot will use its encoders to drive in
 **Hold the Line: (Untested)**
 When the right stick trigger is held, the robot will use its encoders to maintain its current position regardless of stick inputs.
 
-Driver also has control over relay 3 by pressing the right stick's top button.
+Driver also has control over Aux speed controller 6 by pressing the right stick's top button.
 
 ### Operator
 **Analog Sticks:**
@@ -39,16 +39,10 @@ Port | Description
 4 | Aux. Speed Controller 1
 5 | Aux. Speed Controller 2
 6 | Aux. Speed Controller 3
-7 | Empty
-8 | Empty
-9 | Empty
+7 | Aux. Speed Controller 4 (toggle only)
+8 | Aux. Speed Controller 5 (toggle only)
+9 | Aux. Speed Controller 6 (toggle only)
 
-### Relay
-Port | Description
---- | ---
-0 | Aux. Relay 1
-1 | Aux. Relay 2
-2 | Aux. Relay 3
 
 ### DIO
 Port | Description

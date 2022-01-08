@@ -4,7 +4,7 @@
 
 #define FORWARD 1
 #define AUTOFORWARD 1
-
+#define AUXSPDCTL_SPD 1
 // DistanceDrive values
 #define AUTOSTARTSPEED 0.4
 #define DRIVERAMPUPDISTANCE 20

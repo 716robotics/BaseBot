@@ -15,7 +15,7 @@
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/XboxController.h>
 #include <frc/SpeedControllerGroup.h>
-#include <frc/Talon.h>
+#include <frc/VictorSP.h>
 #include <frc/Relay.h>
 #include <frc/Servo.h>
 #include <frc/DoubleSolenoid.h>
@@ -29,21 +29,21 @@ class Robot : public frc::TimedRobot {
   frc::Joystick rightDriveStick{1};
   frc::XboxController gamepad{2};
   //Drive motors
-  frc::Talon lDrive0{0};
-  frc::Talon lDrive1{1};
-  frc::Talon rDrive0{2};
-  frc::Talon rDrive1{3};
+  frc::VictorSP lDrive0{0};
+  frc::VictorSP lDrive1{1};
+  frc::VictorSP rDrive0{2};
+  frc::VictorSP rDrive1{3};
   frc::SpeedControllerGroup lDrive{lDrive0, lDrive1};
   frc::SpeedControllerGroup rDrive{rDrive0, rDrive1};
   frc::DifferentialDrive drive{lDrive, rDrive};
   //Effectors
   frc::Compressor compressor;
-  frc::Talon auxSpeedController1{4};
-  frc::Talon auxSpeedController2{5};
-  frc::Talon auxSpeedController3{6};
-  frc::Relay relay1{0};
-  frc::Relay relay2{1};
-  frc::Relay relay3{2};
+  frc::VictorSP auxSpeedController1{4};
+  frc::VictorSP auxSpeedController2{5};
+  frc::VictorSP auxSpeedController3{6};
+  frc::VictorSP auxSpeedController4{7};
+  frc::VictorSP auxSpeedController5{8};
+  frc::VictorSP auxSpeedController6{9};
   frc::DoubleSolenoid Pneumatic1{0,1};
   frc::DoubleSolenoid Pneumatic2{2,3};
   frc::DoubleSolenoid Pneumatic3{4,5};
@@ -56,9 +56,9 @@ class Robot : public frc::TimedRobot {
   bool sdfr = false;
   bool autoactive = true;
   //Default States
-  frc::Relay::Value Rly1DefState = frc::Relay::kOff;
-  frc::Relay::Value Rly2DefState = frc::Relay::kOff;
-  frc::Relay::Value Rly3DefState = frc::Relay::kOff;
+  float auxSpedCtrlr4DefState = 0;
+  float auxSpedCtrlr5DefState = 0;
+  float auxSpedCtrlr6DefState = 0;
   frc::DoubleSolenoid::Value Pnm1DefState = frc::DoubleSolenoid::Value::kReverse;
   frc::DoubleSolenoid::Value Pnm2DefState = frc::DoubleSolenoid::Value::kReverse;
   frc::DoubleSolenoid::Value Pnm3DefState = frc::DoubleSolenoid::Value::kReverse;

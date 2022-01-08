@@ -59,17 +59,17 @@ void Robot::TeleopPeriodic() {
   else {
     //Relays
     if (gamepad.GetBumper(gamepad.kLeftHand)) {
-      relay1.Set(relay1.kOn);
-      Rly1DefState = frc::Relay::kOff;}
-    else relay1.Set(Rly1DefState);
+      auxSpeedController4.Set(AUXSPDCTL_SPD);
+      auxSpedCtrlr4DefState = 0;}
+    else auxSpeedController4.Set(auxSpedCtrlr4DefState);
     if (gamepad.GetBumper(gamepad.kRightHand)) {
-      relay2.Set(relay2.kOn);
-      Rly2DefState = frc::Relay::kOff;}
-    else relay2.Set(Rly2DefState);
+      auxSpeedController5.Set(AUXSPDCTL_SPD);
+      auxSpedCtrlr5DefState = 0;}
+    else auxSpeedController5.Set(auxSpedCtrlr5DefState);
     if (rightDriveStick.GetTop()) {
-      relay3.Set(relay3.kOn);
-      Rly3DefState = frc::Relay::kOff;}
-    else relay3.Set(Rly3DefState);
+      auxSpeedController6.Set(AUXSPDCTL_SPD);
+      auxSpedCtrlr6DefState = 0;}
+    else auxSpeedController6.Set(auxSpedCtrlr6DefState);
     //Pneumatics
     if (gamepad.GetXButton()) {
       Pneumatic1.Set(Pneumatic1.kForward);
@@ -124,16 +124,16 @@ void Robot::Abort(){
   auxSpeedController1.StopMotor();
   auxSpeedController2.StopMotor();
   auxSpeedController3.StopMotor();
-  relay1.StopMotor();
-  relay2.StopMotor();
-  relay3.StopMotor();
+  auxSpeedController4.StopMotor();
+  auxSpeedController5.StopMotor();
+  auxSpeedController6.StopMotor();
   Pneumatic1.Set(frc::DoubleSolenoid::Value::kReverse);
   Pneumatic2.Set(frc::DoubleSolenoid::Value::kReverse);
   Pneumatic3.Set(frc::DoubleSolenoid::Value::kReverse);
   Pneumatic4.Set(frc::DoubleSolenoid::Value::kReverse);
-  Rly1DefState = frc::Relay::kOff;
-  Rly2DefState = frc::Relay::kOff;
-  Rly3DefState = frc::Relay::kOff;
+  auxSpedCtrlr4DefState = 0;
+  auxSpedCtrlr5DefState = 0;
+  auxSpedCtrlr6DefState = 0;
   Pnm1DefState = frc::DoubleSolenoid::Value::kReverse;
   Pnm2DefState = frc::DoubleSolenoid::Value::kReverse;
   Pnm3DefState = frc::DoubleSolenoid::Value::kReverse;
@@ -141,9 +141,9 @@ void Robot::Abort(){
 }
 
 void Robot::Lock(){
-  if (gamepad.GetBumper(gamepad.kLeftHand)) Rly1DefState = frc::Relay::kOn;
-  if (gamepad.GetBumper(gamepad.kRightHand)) Rly2DefState = frc::Relay::kOn;
-  if (rightDriveStick.GetTop()) Rly3DefState = frc::Relay::kOn;
+  if (gamepad.GetBumper(gamepad.kLeftHand)) auxSpedCtrlr4DefState = AUXSPDCTL_SPD;
+  if (gamepad.GetBumper(gamepad.kRightHand)) auxSpedCtrlr5DefState = AUXSPDCTL_SPD;
+  if (rightDriveStick.GetTop()) auxSpedCtrlr6DefState = AUXSPDCTL_SPD;
   if (gamepad.GetXButton()) Pnm1DefState = frc::DoubleSolenoid::Value::kForward;
   if (gamepad.GetYButton()) Pnm2DefState = frc::DoubleSolenoid::Value::kForward;
   if (gamepad.GetBButton()) Pnm3DefState = frc::DoubleSolenoid::Value::kForward;
